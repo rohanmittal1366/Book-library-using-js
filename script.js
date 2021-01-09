@@ -10,21 +10,7 @@ class Book {
 class UI {
 
     static displayBooks() {
-        const StoredBooks = [
-            {
-                title : 'Mind reading',
-                author: 'swetabh',
-                isbn: '3454'
-            },
-            {
-                title:'Hello java ',
-                author: 'michale',
-                isbn : '3444'
-            }
-        ];
-
-        const books = StoredBooks;
-
+        const books = Store.getbooks();
         books.forEach((book) => UI.addBooksToList(book));
     }
 
@@ -45,42 +31,78 @@ class UI {
         list.appendChild(row);
     }
 
-    static deleteBook(el) 
-    {
-        if(el.classList.contains('delete')){
+    static deleteBook(el) {
+        if (el.classList.contains('delete')) {
 
             el.parentElement.parentElement.remove();
         }
 
     }
 
-    static showAlert(msg, className){
+    static showAlert(msg, className) {
 
         const div = document.createElement('div');
         div.className = `alert alert-${className}`;
         div.appendChild(document.createTextNode(msg));
         const container = document.querySelector('.container');
         const form = document.querySelector('#book-form');
-        container.insertBefore(div,form);
+        container.insertBefore(div, form);
 
         setTimeout(() => document.querySelector('.alert').remove(), 3000);
     }
 
-    static clearField(){
+    static clearField() {
 
-        document.querySelector('#title').value='';
-        document.querySelector('#author').value='';
-        document.querySelector('#isbn').value='';
+        document.querySelector('#title').value = '';
+        document.querySelector('#author').value = '';
+        document.querySelector('#isbn').value = '';
     }
 
 
 }
 
 
-document.addEventListener('DOMContentLoaded',UI.displayBooks);
+class Store {
+
+    static getbooks() {
+
+        let books;
+        if (localStorage.getItem('books') === null) {
+            books = [];
+        }
+        else {
+            books = JSON.parse(localStorage.getItem('books'));
+        }
+
+    }
+
+    static addbook() {
+        const books = Store.getbooks();
+        books.push(book);
+        localStorage.setItem('books', JSON.stringify(books));
+
+    }
+
+    static removebook() {
+        const books = Store.getbooks();
+        books.forEach((book, index) => {
+
+            if(book.isbn === isbn)
+            {
+                books.splice(index, 1);
+            }
+        });
+
+        localStorage.setItem('books',JSON.stringify(books));
+    }
+}
 
 
-document.querySelector('#book-form').addEventListener('submit',(e) =>{
+
+document.addEventListener('DOMContentLoaded', UI.displayBooks);
+
+
+document.querySelector('#book-form').addEventListener('submit', (e) => {
 
     e.preventDefault();
 
@@ -88,17 +110,15 @@ document.querySelector('#book-form').addEventListener('submit',(e) =>{
     const author = document.querySelector('#author').value;
     const isbn = document.querySelector('#isbn').value;
 
-    if(title === '' || author === '' || isbn === '')
-    {
+    if (title === '' || author === '' || isbn === '') {
         UI.showAlert('Field is empty, Please fill it first', 'danger');
     }
-    else
-    {
-    const book = new Book(title,author,isbn);
-    UI.addBooksToList(book);
-
-    UI.showAlert('Book is succesfully added' , 'success');
-    UI.clearField();
+    else {
+        const book = new Book(title, author, isbn);
+        UI.addBooksToList(book);
+        Store.addbook(book);
+        UI.showAlert('Book is succesfully added', 'success');
+        UI.clearField();
 
     }
 
@@ -108,7 +128,7 @@ document.querySelector('#book-list').addEventListener('click', (e) => {
 
     UI.deleteBook(e.target);
 
-    UI.showAlert('Book is succesfully removed' , 'success');
+    UI.showAlert('Book is succesfully removed', 'success');
 });
 
 
