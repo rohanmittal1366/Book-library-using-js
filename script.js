@@ -1,4 +1,4 @@
-class book {
+class Book {
 
     contructor(title, author, isbn) {
         this.title = title;
@@ -45,6 +45,23 @@ class UI {
         list.appendChild(row);
     }
 
+    static deleteBook(el) 
+    {
+        if(el.classList.contains('delete')){
+
+            el.parentElement.parentElement.remove();
+        }
+
+    }
+
+    static clearField(){
+
+        document.querySelector('#title').value='';
+        document.querySelector('#author').value='';
+        document.querySelector('#isbn').value='';
+    }
+
+
 }
 
 
@@ -59,8 +76,24 @@ document.querySelector('#book-form').addEventListener('submit',(e) =>{
     const author = document.querySelector('#author').value;
     const isbn = document.querySelector('#isbn').value;
 
-    const Books = new book(title,author,isbn);
+    if(title === '' || author === '' || isbn === '')
+    {
+        alert("Field is empty, Please fill it first ");
+    }
+    else
+    {
+    const book = new Book(title,author,isbn);
+    UI.addBooksToList(book);
 
+    UI.clearField();
+
+    }
+
+});
+
+document.querySelector('#book-list').addEventListener('click', (e) => {
+
+    UI.deleteBook(e.target)
 });
 
 
