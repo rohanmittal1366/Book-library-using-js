@@ -54,6 +54,18 @@ class UI {
 
     }
 
+    static showAlert(msg, className){
+
+        const div = document.createElement('div');
+        div.className = `alert alert-${className}`;
+        div.appendChild(document.createTextNode(msg));
+        const container = document.querySelector('.container');
+        const form = document.querySelector('#book-form');
+        container.insertBefore(div,form);
+
+        setTimeout(() => document.querySelector('.alert').remove(), 3000);
+    }
+
     static clearField(){
 
         document.querySelector('#title').value='';
@@ -78,13 +90,14 @@ document.querySelector('#book-form').addEventListener('submit',(e) =>{
 
     if(title === '' || author === '' || isbn === '')
     {
-        alert("Field is empty, Please fill it first ");
+        UI.showAlert('Field is empty, Please fill it first', 'danger');
     }
     else
     {
     const book = new Book(title,author,isbn);
     UI.addBooksToList(book);
 
+    UI.showAlert('Book is succesfully added' , 'success');
     UI.clearField();
 
     }
@@ -93,7 +106,9 @@ document.querySelector('#book-form').addEventListener('submit',(e) =>{
 
 document.querySelector('#book-list').addEventListener('click', (e) => {
 
-    UI.deleteBook(e.target)
+    UI.deleteBook(e.target);
+
+    UI.showAlert('Book is succesfully removed' , 'success');
 });
 
 
