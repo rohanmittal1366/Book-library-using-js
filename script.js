@@ -1,6 +1,6 @@
 class Book {
 
-    contructor(title, author, isbn) {
+    constructor(title, author, isbn) {
         this.title = title;
         this.author = author;
         this.isbn = isbn;
@@ -73,27 +73,27 @@ class Store {
         else {
             books = JSON.parse(localStorage.getItem('books'));
         }
+        return books;
 
     }
 
-    static addbook() {
+    static addbook(book) {
         const books = Store.getbooks();
         books.push(book);
         localStorage.setItem('books', JSON.stringify(books));
 
     }
 
-    static removebook() {
+    static removebook(isbn) {
         const books = Store.getbooks();
         books.forEach((book, index) => {
 
-            if(book.isbn === isbn)
-            {
+            if (book.isbn === isbn) {
                 books.splice(index, 1);
             }
         });
 
-        localStorage.setItem('books',JSON.stringify(books));
+        localStorage.setItem('books', JSON.stringify(books));
     }
 }
 
@@ -127,7 +127,7 @@ document.querySelector('#book-form').addEventListener('submit', (e) => {
 document.querySelector('#book-list').addEventListener('click', (e) => {
 
     UI.deleteBook(e.target);
-
+    Store.removebook(e.target.parentElement.previousElementSibling.textContent);
     UI.showAlert('Book is succesfully removed', 'success');
 });
 
